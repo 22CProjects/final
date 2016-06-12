@@ -119,7 +119,7 @@ bool menu(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>
 	cin >> choice;
 	switch (choice){
 	case 1: addStudent(stu, stu_tree, stu_hash);break;
-	case 2: deleteStudent(stu, stu_tree, stu_hash, deletedStudents); break;//beep bop broken
+	case 2: deleteStudent(stu, stu_tree, stu_hash, deletedStudents); break;
 	case 3: findStudent(stu_tree, stu_hash); break;
 	case 4: cout << "[Student IDs in hashtable sequence]" << endl; stu_hash.print_table(); break;
 	case 5: cout << "[Student IDs in sorted sequence]" << endl; stu_tree.inorderTraverse(print); break;
@@ -221,11 +221,21 @@ void addStudent(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData
 
 void deleteStudent(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
 	int id;
-	//StudentData* dStu;
 	cout << "Enter ID of student to remove from system: ";
 	cin >> id;
-	stu_tree.remove(id);
-
+	StudentData* dStu = stu_tree.getEntry_address(id);
+	if (dStu != nullptr){
+		cout << "Deleting " << dStu->getName() <<" from system . ";
+		stu_tree.remove(id);
+		cout << ". ";
+		stu_hash.remove(id);
+		cout << ". ";
+		stu.remove(*dStu);
+		cout << "done"<<endl;
+	}
+	else{
+		cout << "Failed: Student does not exist in system" << endl;
+	}
 }//end delete student
 
 void findStudent(BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash){
@@ -235,6 +245,7 @@ void findStudent(BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, St
 	// Find a student using the key
 	cout << "Enter student ID: ";
 	cin >> id;
+	
 	tempBool = stu_tree.is_contained(id);
 
 	if (tempBool == true)
@@ -250,7 +261,7 @@ void findStudent(BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, St
 }//end findStudent
 
 void saveFile(BinarySearchTree<StudentData, int>& stu_tree){
-	cout << "\n\n\nSAVED DATA to FILE\n";
+	cout << "\n\n\n[SAVED DATA to FILE]\n";
 	stu_tree.preorderTraverse(visit);
 	ofstream outFile;
 	outFile.open("StudentOut.txt");

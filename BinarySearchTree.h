@@ -62,7 +62,7 @@ class BinarySearchTree
 		*************************************************************************************/
 		BinaryNode<DataType, KeyType>* removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success);
 		BinaryNode<DataType, KeyType>* removeNode(BinaryNode<DataType, KeyType>* nodePtr);
-		BinaryNode<DataType, KeyType>* removeLeftMostNode(BinaryNode<DataType, KeyType>* nodePtr, KeyType& successorKey, DataType* inorderSuccesssorPtr);
+		BinaryNode<DataType, KeyType>* removeLeftMostNode(BinaryNode<DataType, KeyType>* nodePtr, KeyType& successorKey, DataType* &inorderSuccesssorPtr);
 
 
 		
@@ -434,7 +434,6 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 		bool success = false;
 		rootPtr = removeValue(rootPtr, targetKey, success);
 		if (success == true) nodeCounter--;
-		cout << "Total Nodes: " << nodeCounter << endl;
 		return success;
 	} // end remove
 
@@ -515,7 +514,7 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 	// REMOVE LEFT MOST NODE
 	template< class DataType, class KeyType>
 	BinaryNode<DataType, KeyType>* BinarySearchTree<DataType, KeyType>::
-		removeLeftMostNode(BinaryNode<DataType, KeyType>* nodePtr, KeyType& successorKey, DataType* inorderSuccesssorPtr)
+		removeLeftMostNode(BinaryNode<DataType, KeyType>* nodePtr, KeyType& successorKey, DataType* &inorderSuccesssorPtr)
 	{
 		if (nodePtr->getLeftChildPtr() == nullptr)
 		{
@@ -622,7 +621,6 @@ void BinarySearchTree<DataType, KeyType>::save_to_file_helper(BinaryNode<DataTyp
 	else
 	{
 		outputFile << *subTreePtr->getItemPtr()<<endl;
-		cout << *subTreePtr->getItemPtr() << endl;
 		save_to_file_helper(subTreePtr->getLeftChildPtr(), outputFile);
 		save_to_file_helper(subTreePtr->getRightChildPtr(), outputFile);
 	}

@@ -5,6 +5,5 @@
 4000000,Bel Kez,Accounting,2,69,2.8,5
 15000000,Daniel Raff,Acting,3.8,26,3,4
 9000000,Keira Knightly,Acting,3.7,92.5,2.5,10
-12345678,An Ki,Math,4,55,1,21
 16000000,Selena Gomez,Singing,3,64,3.5,7
 20000000,Kaylor Jwift,Art,3.3,23,4.8,3
