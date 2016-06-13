@@ -1,3 +1,14 @@
+/***************************************************************************
+	FINAL PROJECT		Student database for checking eligibility
+						
+						The program uses an AVL tree to sort data and a 
+						hash table to search data
+
+
+	Date				June 14th 2016
+	Author				Anna Houk, Kiera Nguyen, Michael Phan
+
+***************************************************************************/
 #include <iostream>
 #include <sstream>		// required for string stream
 #include <fstream>		// required for ifstream
@@ -8,25 +19,17 @@
 #include "StudentData.h"
 #include "SinglyLinkedList.h"
 #include "StackLinkedList.h"
+
 using namespace std;
 
-void visit(int& someData)
-	{
-		someData=0;
-	}
-
-void print(int& someData)
-{
-	cout << someData << endl;
-}
 
 //Prototypes
-void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash);
-bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
-void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash);
-void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
-void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash);
-void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
+void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash);
+bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
+void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash);
+void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
+void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash);
+void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
 void saveFile(AVLTree<StudentData, int>& stu_tree);
 
 
@@ -35,7 +38,7 @@ int main()
 	bool cont = true;
 	SinglyLinkedList<StudentData> stu;
 	AVLTree<StudentData, int> stu_tree;
-	HashTable<int, StudentData> stu_hash;
+	HashTable<StudentData, int> stu_hash;
 	StackLinkedList<StudentData> deletedStudents;
 
 	// Read student info from a file
@@ -53,7 +56,26 @@ int main()
 }//end main
 
 
-void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash)
+/********************************************************
+	void functions for supporting traveral methods in
+	BST and for printing the tree visually
+		- Parameter: a reference of integer
+		- Return: none
+********************************************************/
+void visit(int& someData){ someData = 0; }
+void print(int& someData){ cout << someData << endl; }
+
+
+/****************************************************************************************
+	readFile definition
+	- It reads data from a text file, and insert them into the AVL tree & hash table
+	- Parameter: 
+		+ A reference of SinglyLinkedList
+		+ A reference of AVLTree
+		+ A reference of HashTable
+	- Return: none
+****************************************************************************************/
+void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash)
 {
 	ifstream  inputFile;	// to hold the input file
 	string    line;			// to temporarily hold each line of string from the file 
@@ -105,35 +127,57 @@ void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu
 	}
 }//end readFile
 
-bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
+
+
+/****************************************************************************************
+	menu definition
+	- displays menu and get a selection from user
+	- Parameter:
+		+ A reference of SinglyLinkedList
+		+ A reference of AVLTree
+		+ A reference of HashTable
+		+ A reference of StackLinkedList
+	- Return: a boolean
+****************************************************************************************/
+bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
 	int choice;
-	cout << "MENU:" << endl
-		<< "(1) Add Student" << endl
-		<< "(2) Delete Student" << endl
-		<< "(3) Find Student record" << endl
-		<< "(4) List Students in hashtable sequence" << endl
-		<< "(5) List Students in sorted ID sequence" << endl
-		<< "(6) Print Tree " << endl
-		<< "(7) Efficiency" << endl
-		<< "(8) Undo last delete" << endl
-		<< "(9) Quit" << endl;
+	cout << "\nMENU:\n"
+		<< "(1) Add Student\n"
+		<< "(2) Delete Student\n"
+		<< "(3) Find Student record\n"
+		<< "(4) List Students in hashtable sequence\n"
+		<< "(5) List Students in sorted ID sequence\n"
+		<< "(6) Print Tree \n"
+		<< "(7) Efficiency\n"
+		<< "(8) Undo last delete\n"
+		<< "(9) Quit\n";
 	cin >> choice;
 	switch (choice){
 	case 1: addStudent(stu, stu_tree, stu_hash);break;
 	case 2: deleteStudent(stu, stu_tree, stu_hash, deletedStudents); break;
 	case 3: findStudent(stu_tree, stu_hash); break;
-	case 4: cout << "[Student IDs in hashtable sequence]" << endl; stu_hash.print_table(); break;
-	case 5: cout << "[Student IDs in sorted sequence]" << endl; stu_tree.inorderTraverse(print); break;
-	case 6: cout << "[Tree visual - student IDs]" << endl; stu_tree.print_tree(); break;
+	case 4: cout << "[Student IDs in hashtable sequence]\n"; stu_hash.print_table(); break;
+	case 5: cout << "[Student IDs in sorted sequence]\n"; stu_tree.inorderTraverse(print); break;
+	case 6: cout << "[Tree visual - student IDs]\n"; stu_tree.print_tree(); break;
 	case 7: break;//TBD
 	case 8: undoDelete(stu, stu_tree, stu_hash, deletedStudents); break;//has issue...go to function for info
 	case 9: return false; 
-	default: cout << "Invalid option" << endl; break;
+	default: cout << "Invalid option\n"; break;
 	}
 	return true;
 }
 
-void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash){
+
+/****************************************************************************************
+	addStudent definition
+	- receive input data from User to add a new student to AVL tree and hash table
+	- Parameter:
+		+ A reference of SinglyLinkedList
+		+ A reference of AVLTree
+		+ A reference of HashTable
+	- Return: none
+****************************************************************************************/
+void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash){
 	int id, y, tu, cu;
 	double gpa = 1.0;
 	string name, major;
@@ -220,7 +264,18 @@ void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& s
 	} while (valid == false);
 }//end addStudent
 
-void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
+
+/****************************************************************************************
+	deleteStudent definition
+	- asks user for the ID of the student and delete it from AVL tree & hash table
+	- Parameter:
+		+ A reference of SinglyLinkedList
+		+ A reference of AVLTree
+		+ A reference of HashTable
+		+ A reference of StackLinkedList
+	- Return: none
+****************************************************************************************/
+void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
 	int id;
 	cout << "Enter ID of student to remove from system: ";
 	cin >> id;
@@ -242,7 +297,16 @@ void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>
 	}
 }//end delete student
 
-void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash){
+
+/****************************************************************************************
+	findStudent definition
+	- finds and displays a student record
+	- Parameter:
+		+ A reference of AVLTree
+		+ A reference of HashTable
+	- Return: none
+****************************************************************************************/
+void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash){
 	bool tempBool = false;
 	int id;
 
@@ -264,9 +328,22 @@ void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData
 		cout << "Student "<< id<< "does not exist\n";
 }//end findStudent
 
-void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
+
+/****************************************************************************************
+	undoDelete definition
+	- undo the last delete (can only undo before the data is saved to an output file)
+	- Parameter:
+		+ A reference of SinglyLinkedList
+		+ A reference of AVLTree
+		+ A reference of HashTable
+		+ A reference of StackLinkedList
+	- Return: none
+****************************************************************************************/
+void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
 	cout << deletedStudents.peek()<<endl;
+
 	StudentData* moreStu = &deletedStudents.peek();//missing some data fields (the string values)
+
 	deletedStudents.pop();
 	cout << "Adding " << moreStu->getName() << " (" << moreStu->getID() << ") back into the system"<<endl;
 	stu.addTop(*moreStu);
@@ -275,10 +352,19 @@ void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& s
 	cout << *moreStu << endl;
 }
 
+
+/****************************************************************************************
+	saveFile definition
+	- save student data to a text file in preOrder traversal
+	- Parameter:
+		+ A reference of AVLTree
+	- Return: none
+****************************************************************************************/
 void saveFile(AVLTree<StudentData, int>& stu_tree){
 	cout << "\n\n\n[SAVED DATA to FILE]\n";
-	stu_tree.preorderTraverse(visit);
+
 	ofstream outFile;
+
 	outFile.open("StudentOut.txt");
 	stu_tree.save_to_file(outFile);
 

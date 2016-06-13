@@ -7,7 +7,7 @@
 
 using namespace std;
 
-template <class key_type, class value_type>
+template <class value_type, class key_type>
 class HashNode
 {
 private:
