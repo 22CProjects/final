@@ -61,7 +61,7 @@ class BinarySearchTree
 		*************************************************************************************/
 		BinaryNode<DataType, KeyType>* removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success);
 		BinaryNode<DataType, KeyType>* removeNode(BinaryNode<DataType, KeyType>* nodePtr);
-		BinaryNode<DataType, KeyType>* removeLeftMostNode(BinaryNode<DataType, KeyType>* nodePtr, KeyType& successorKey, DataType* &inorderSuccesssorPtr);
+		BinaryNode<DataType, KeyType>* removeLeftMostNode(BinaryNode<DataType, KeyType>* nodePtr, KeyType& successorKey, DataType* inorderSuccesssorPtr);
 
 
 		
@@ -485,12 +485,46 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 		}
 		else if (nodePtr->getLeftChildPtr() != nullptr && nodePtr->getRightChildPtr() != nullptr) // has two children
 		{
-			DataType* newNodeValuePtr=nullptr;
-			KeyType newNodeKey;
-			tempPtr = removeLeftMostNode(nodePtr->getRightChildPtr(), newNodeKey, newNodeValuePtr);
-			nodePtr->setRightChildPtr(tempPtr);
-			nodePtr->setItemPtr(newNodeValuePtr);
-			nodePtr->set_key(newNodeKey);
+			BinaryNode<DataType, KeyType>* temp = nodePtr->getRightChildPtr();
+			
+
+			if (temp->isLeaf() == true)
+			{
+				nodePtr->setItemPtr(temp->getItemPtr());
+				nodePtr->set_key(temp->get_key());
+				nodePtr->setRightChildPtr(nullptr);
+			}
+			else if (temp->getLeftChildPtr() == nullptr && temp->getRightChildPtr() != nullptr)
+			{
+				BinaryNode<DataType, KeyType>* temp_R = temp->getRightChildPtr();
+				nodePtr->setItemPtr(temp->getItemPtr());
+				nodePtr->set_key(temp->get_key());
+				nodePtr->setRightChildPtr(temp_R);
+			}
+			else if (temp->getLeftChildPtr()->getLeftChildPtr() == nullptr)
+			{
+				BinaryNode<DataType, KeyType>* temp_L = temp->getLeftChildPtr();
+				nodePtr->setItemPtr(temp_L->getItemPtr());
+				nodePtr->set_key(temp_L->get_key());
+				temp->setLeftChildPtr(nullptr);
+			}
+			else
+			{
+				BinaryNode<DataType, KeyType>* temp_L = temp->getLeftChildPtr();
+				BinaryNode<DataType, KeyType>* temp_LL = temp_L->getLeftChildPtr();
+				while (temp_LL->getLeftChildPtr() != nullptr)
+				{
+					temp = temp_L;
+					temp_L = temp_LL;
+					temp_LL = temp_LL->getLeftChildPtr();
+				}
+				nodePtr->setItemPtr(temp_LL->getItemPtr());
+				nodePtr->set_key(temp_LL->get_key());
+				temp_L->setLeftChildPtr(nullptr);
+			}
+			
+
+			
 			return nodePtr;
 		}
 		else
@@ -515,7 +549,7 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 	// REMOVE LEFT MOST NODE
 	template< class DataType, class KeyType>
 	BinaryNode<DataType, KeyType>* BinarySearchTree<DataType, KeyType>::
-		removeLeftMostNode(BinaryNode<DataType, KeyType>* nodePtr, KeyType& successorKey, DataType* &inorderSuccesssorPtr)
+		removeLeftMostNode(BinaryNode<DataType, KeyType>* nodePtr, KeyType& successorKey, DataType* inorderSuccesssorPtr)
 	{
 		if (nodePtr->getLeftChildPtr() == nullptr)
 		{
@@ -545,9 +579,6 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 		{
 			inorder(visit, treePtr->getLeftChildPtr());
 
-//			cout << "Inorder: " << treePtr->get_key() << endl;
-//			cout << "content: " << *treePtr->getItemPtr()<<endl;
-
 			KeyType theItemKey = treePtr->get_key();
 			visit(theItemKey);
 
@@ -566,8 +597,6 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 		{
 			KeyType theItemKey = treePtr->get_key();
 			visit(theItemKey);
-
-		//	cout << "Pre-order: " << treePtr->get_key() << endl;
 
 			preorder(visit, treePtr->getLeftChildPtr());
 
@@ -590,7 +619,6 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 			KeyType theItemKey = treePtr->get_key();
 			visit(theItemKey);
 
-//			cout << "Post-order: " << treePtr->get_key() << endl;
 		} // end if
 	} // end postorder 
 
