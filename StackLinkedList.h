@@ -30,6 +30,9 @@ public:
 		remove(d);
 	}
 
+	DataType peek(){
+		return headNode.get_Front()->get_data();
+	}
 
 	/* Definition of isEmpty
 	- It checks if the list is empty

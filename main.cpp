@@ -3,7 +3,7 @@
 #include <fstream>		// required for ifstream
 #include <string>		// required for string
 #include <cstdlib>		// required for atoi, atof
-#include "BinarySearchTree.h"
+#include "AVLTree.h"
 #include "HashTable.h"
 #include "StudentData.h"
 #include "SinglyLinkedList.h"
@@ -21,19 +21,20 @@ void print(int& someData)
 }
 
 //Prototypes
-void readFile(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash);
-bool menu(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
-void addStudent(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash);
-void deleteStudent(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
-void findStudent(BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash);
-void saveFile(BinarySearchTree<StudentData, int>& stu_tree);
+void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash);
+bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
+void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash);
+void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
+void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash);
+void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
+void saveFile(AVLTree<StudentData, int>& stu_tree);
 
 
 int main()
 {
 	bool cont = true;
 	SinglyLinkedList<StudentData> stu;
-	BinarySearchTree<StudentData, int> stu_tree;
+	AVLTree<StudentData, int> stu_tree;
 	HashTable<int, StudentData> stu_hash;
 	StackLinkedList<StudentData> deletedStudents;
 
@@ -52,7 +53,7 @@ int main()
 }//end main
 
 
-void readFile(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash)
+void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash)
 {
 	ifstream  inputFile;	// to hold the input file
 	string    line;			// to temporarily hold each line of string from the file 
@@ -94,7 +95,7 @@ void readFile(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, 
 
 			stu.addEnd(*s);
 
-			stu_tree.add(id_convert, stu.get_node_address(*s));
+			stu_tree.avlAdd(id_convert, stu.get_node_address(*s));
 			stu_hash.insert(id_convert, *stu.get_node_address(*s));
 		
 			delete s;
@@ -104,7 +105,7 @@ void readFile(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, 
 	}
 }//end readFile
 
-bool menu(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
+bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
 	int choice;
 	cout << "MENU:" << endl
 		<< "(1) Add Student" << endl
@@ -114,7 +115,7 @@ bool menu(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>
 		<< "(5) List Students in sorted ID sequence" << endl
 		<< "(6) Print Tree " << endl
 		<< "(7) Efficiency" << endl
-		<< "(8) Use AVL tree" << endl
+		<< "(8) Undo last delete" << endl
 		<< "(9) Quit" << endl;
 	cin >> choice;
 	switch (choice){
@@ -125,14 +126,14 @@ bool menu(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>
 	case 5: cout << "[Student IDs in sorted sequence]" << endl; stu_tree.inorderTraverse(print); break;
 	case 6: cout << "[Tree visual - student IDs]" << endl; stu_tree.print_tree(); break;
 	case 7: break;//TBD
-	case 8: break;//must finish
+	case 8: undoDelete(stu, stu_tree, stu_hash, deletedStudents); break;//has issue...go to function for info
 	case 9: return false; 
 	default: cout << "Invalid option" << endl; break;
 	}
 	return true;
 }
 
-void addStudent(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash){
+void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash){
 	int id, y, tu, cu;
 	double gpa = 1.0;
 	string name, major;
@@ -202,7 +203,7 @@ void addStudent(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData
 	do{
 		if (conf == 'y'){
 			stu.addTop(*moreStu);
-			stu_tree.add(stu.get_node_data(*moreStu).getID(), stu.get_node_address(*moreStu));
+			stu_tree.avlAdd(stu.get_node_data(*moreStu).getID(), stu.get_node_address(*moreStu));
 			stu_hash.insert(stu.get_node_data(*moreStu).getID(), *stu.get_node_address(*moreStu));
 			delete moreStu;
 			valid = true;
@@ -219,26 +220,29 @@ void addStudent(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData
 	} while (valid == false);
 }//end addStudent
 
-void deleteStudent(SinglyLinkedList<StudentData>& stu, BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
+void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
 	int id;
 	cout << "Enter ID of student to remove from system: ";
 	cin >> id;
-	StudentData* dStu = stu_tree.getEntry_address(id);
-	if (dStu != nullptr){
-		cout << "Deleting " << dStu->getName() <<" from system . ";
-		stu_tree.remove(id);
-		cout << ". ";
-		stu_hash.remove(id);
-		cout << ". ";
-		stu.remove(*dStu);
-		cout << "done"<<endl;
+	if (stu_tree.is_contained(id)){
+		StudentData* dStu = stu_tree.getEntry_address(id);
+		if (dStu != nullptr){
+			deletedStudents.push(*dStu);//add student to deleted stack
+			cout << "Deleting " << dStu->getName() << " from system . ";
+			stu_tree.avlRemove(id);
+			cout << ". ";
+			stu_hash.remove(id);
+			cout << ". ";
+			stu.remove(*dStu);
+			cout << "done" << endl;
+		}
 	}
 	else{
 		cout << "Failed: Student does not exist in system" << endl;
 	}
 }//end delete student
 
-void findStudent(BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash){
+void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash){
 	bool tempBool = false;
 	int id;
 
@@ -260,7 +264,18 @@ void findStudent(BinarySearchTree<StudentData, int>& stu_tree, HashTable<int, St
 		cout << "Student "<< id<< "does not exist\n";
 }//end findStudent
 
-void saveFile(BinarySearchTree<StudentData, int>& stu_tree){
+void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<int, StudentData>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
+	cout << deletedStudents.peek()<<endl;
+	StudentData* moreStu = &deletedStudents.peek();//missing some data fields (the string values)
+	deletedStudents.pop();
+	cout << "Adding " << moreStu->getName() << " (" << moreStu->getID() << ") back into the system"<<endl;
+	stu.addTop(*moreStu);
+	stu_tree.avlAdd(stu.get_node_data(*moreStu).getID(), stu.get_node_address(*moreStu));
+	stu_hash.insert(stu.get_node_data(*moreStu).getID(), *stu.get_node_address(*moreStu));
+	cout << *moreStu << endl;
+}
+
+void saveFile(AVLTree<StudentData, int>& stu_tree){
 	cout << "\n\n\n[SAVED DATA to FILE]\n";
 	stu_tree.preorderTraverse(visit);
 	ofstream outFile;

@@ -1,5 +1,4 @@
-#ifndef _BINARY_SEARCH_TREE
-#define _BINARY_SEARCH_TREE
+#pragma once
 
 #include "BinaryNode.h"
 #include <iostream>
@@ -11,10 +10,10 @@ template<class DataType, class KeyType>
 class BinarySearchTree
 {
 	private:
+		
+	protected:
 		BinaryNode<DataType, KeyType>* rootPtr;	// point to the highest root of the tree
 		int nodeCounter;
-
-	protected:
 		/*************************************************************************************
 			getHeightHelper - Protected
 			- Recursively goes through the tree to count the height of the tree
@@ -197,6 +196,8 @@ class BinarySearchTree
 		bool isEmpty() const			{ if (nodeCounter < 1) return true; else return false; }// True: tree empty
 		int getHeight()					{ return getHeightHelper(rootPtr); }					// Get height of the tree
 		int getNumberOfNodes() const	{ return nodeCounter; }									// Total nodes in the tree
+		
+		void set_rootPtr(BinaryNode<DataType, KeyType>* aNode)	{ rootPtr = aNode; }
 
 		BinaryNode<DataType, KeyType>* getRootPtr(){ return rootPtr; }							// Get the address of the highest root
 
@@ -235,7 +236,7 @@ class BinarySearchTree
 		****************************************************************************/
 		void print_tree()								{	print_helper(rootPtr, 0); }
 };
-#endif // !_BinarySearchTree
+// !_BinarySearchTree
 
 // CONSTRUCTOR2 - Public
 template<class DataType, class KeyType>
@@ -625,5 +626,6 @@ void BinarySearchTree<DataType, KeyType>::save_to_file_helper(BinaryNode<DataTyp
 		save_to_file_helper(subTreePtr->getRightChildPtr(), outputFile);
 	}
 }
+
 
 
