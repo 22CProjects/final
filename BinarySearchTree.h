@@ -59,7 +59,7 @@ class BinarySearchTree
 
 			removeValue calls removeNode calls removeLeftMostNode
 		*************************************************************************************/
-		BinaryNode<DataType, KeyType>* removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success);
+		virtual BinaryNode<DataType, KeyType>* removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success);
 		BinaryNode<DataType, KeyType>* removeNode(BinaryNode<DataType, KeyType>* nodePtr);
 		BinaryNode<DataType, KeyType>* removeLeftMostNode(BinaryNode<DataType, KeyType>* nodePtr, KeyType& successorKey, DataType* inorderSuccesssorPtr);
 
@@ -297,9 +297,18 @@ BinaryNode<DataType, KeyType>* BinarySearchTree<DataType, KeyType>::copyTree(con
 	{
 		if (subTreePtr == nullptr)
 			return 0;
-		else
+		else if (subTreePtr->isLeaf())
+			return 0;
+		else if (subTreePtr->getLeftChildPtr() == nullptr){
+			return  1 + getHeightHelper(subTreePtr->getRightChildPtr());
+		}
+		else if (subTreePtr->getRightChildPtr() == nullptr){
+			return 1 + getHeightHelper(subTreePtr->getLeftChildPtr());
+		}
+		else{
 			return 1 + max(getHeightHelper(subTreePtr->getLeftChildPtr()),
-			getHeightHelper(subTreePtr->getRightChildPtr()));
+				getHeightHelper(subTreePtr->getRightChildPtr()));
+		}
 	} // end getHeightHelper 
 
 

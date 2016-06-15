@@ -12,10 +12,6 @@ class AVLTree : public BinarySearchTree<DataType, KeyType>
 {
 	protected:
 		BinaryNode<DataType, KeyType>* insert(BinaryNode<DataType, KeyType>* root, BinaryNode<DataType, KeyType>* newNodePtr);
-		void leftBalance(BinaryNode<DataType, KeyType>* root);
-		void rightBalance(BinaryNode<DataType, KeyType>* root);
-		BinaryNode<DataType, KeyType>* rotateRight(BinaryNode<DataType, KeyType>* root);
-		BinaryNode<DataType, KeyType>* rotateLeft(BinaryNode<DataType, KeyType>* root);
 
 		int balanceFactor(BinaryNode<DataType, KeyType>* root);
 		
@@ -26,7 +22,7 @@ class AVLTree : public BinarySearchTree<DataType, KeyType>
 		BinaryNode<DataType, KeyType>* RL_rotation(BinaryNode<DataType, KeyType>* root);
 		BinaryNode<DataType, KeyType>* LR_rotation(BinaryNode<DataType, KeyType>* root);
 
-		BinaryNode<DataType, KeyType>* minValueNode(BinaryNode<DataType, KeyType>* root);
+		BinaryNode<DataType, KeyType>* removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success);
 
 
 	public:
@@ -51,6 +47,16 @@ class AVLTree : public BinarySearchTree<DataType, KeyType>
 template<class DataType, class KeyType>
 int AVLTree<DataType, KeyType>::balanceFactor(BinaryNode<DataType, KeyType>* root)
 {
+	if (root->isLeaf()){
+		return 0;
+	}
+	else if (root->getLeftChildPtr() == nullptr){
+		return 0 - getHeightHelper(root->getRightChildPtr());
+	}
+	else if (root->getRightChildPtr() == nullptr){
+		return getHeightHelper(root->getLeftChildPtr());
+	}
+	else
 	return getHeightHelper(root->getLeftChildPtr()) - getHeightHelper(root->getRightChildPtr());
 }
 
@@ -153,17 +159,33 @@ bool AVLTree<DataType, KeyType>::avlRemove(KeyType target)
 } // end remove
 
 
-
-/* Given a non-empty binary search tree, return the node with minimum
-key value found in that tree. Note that the entire tree does not
-need to be searched. */
+// REMOVE VALUE
 template< class DataType, class KeyType>
-BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::minValueNode(BinaryNode<DataType, KeyType>* root)
+BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::
+removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success)
 {
-	BinaryNode<DataType, KeyType>* nodePtr = root;
-	// loop down to find the leftmost leaf 
-	while (nodePtr->getLeftChildPtr() != nullptr;)
-		nodePtr = nodePtr->getLeftChildPtr();
-	return nodePtr;
-}
+	BinaryNode<DataType, KeyType>* tempPtr = nullptr;
 
+	if (subTreePtr == nullptr)
+	{
+		success = false;
+		return nullptr;
+	}
+	else if (subTreePtr->get_key() == targetKey)
+	{
+		// Item is in the root of some subtree
+		subTreePtr = removeNode(subTreePtr); // Remove item
+		success = true;
+	}
+	else if (subTreePtr->get_key() > targetKey)
+	{
+		tempPtr = removeValue(subTreePtr->getLeftChildPtr(), targetKey, success);
+		subTreePtr->setLeftChildPtr(tempPtr);
+	}
+	else
+	{
+		tempPtr = removeValue(subTreePtr->getRightChildPtr(), targetKey, success);
+		subTreePtr->setRightChildPtr(tempPtr);
+	}
+	return balance(subTreePtr);
+} // End remove value

@@ -7,14 +7,14 @@ class BinaryNode
 private:
 	KeyType key;									// The key to sort data to the tree
 	DataType* itemPtr;								// Pointer to Data
-	BinaryNode<DataType, KeyType>* leftChildPtr;	// Pointer to left child
-	BinaryNode<DataType, KeyType>* rightChildPtr;	// Pointer to right child
+	BinaryNode<DataType, KeyType>* leftChildPtr = nullptr;	// Pointer to left child
+	BinaryNode<DataType, KeyType>* rightChildPtr = nullptr;	// Pointer to right child
 
 public:
 	// Default constructor: initialize two right and left pointer to nullptr
-	BinaryNode() :leftChildPtr(0), rightChildPtr(0), itemPtr(0), key(0){}
+	BinaryNode() :leftChildPtr(nullptr), rightChildPtr(nullptr), itemPtr(0), key(0){}
 	// Constructor 1: initialize item = anItem input, and two right and left pointer to nullptr
-	BinaryNode(const KeyType k, DataType* anItemPtr) : key(k), itemPtr(anItemPtr), leftChildPtr(0), rightChildPtr(0){}
+	BinaryNode(const KeyType k, DataType* anItemPtr) : key(k), itemPtr(anItemPtr), leftChildPtr(nullptr), rightChildPtr(nullptr){}
 	// Constructor 2: initialize item, right pointer and left pointer equal to the according parameters 
 	BinaryNode(const KeyType k, const DataType* anItemPtr, BinaryNode<DataType, KeyType>* leftPtr, BinaryNode<DataType, KeyType>* rightPtr) :
 		key(k), itemPtr(anItemPtr), leftChildPtr(leftPtr), rightChildPtr(rightPtr){}
