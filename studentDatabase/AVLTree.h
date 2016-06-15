@@ -47,8 +47,11 @@ class AVLTree : public BinarySearchTree<DataType, KeyType>
 template<class DataType, class KeyType>
 int AVLTree<DataType, KeyType>::balanceFactor(BinaryNode<DataType, KeyType>* root)
 {
-	if (root->isLeaf()){
+	if (root == nullptr){
 		return 0;
+	}
+	else if (root->isLeaf()){
+		return 1;
 	}
 	else if (root->getLeftChildPtr() == nullptr){
 		return 0 - getHeightHelper(root->getRightChildPtr());
