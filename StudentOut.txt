@@ -1,5 +1,0 @@
-20000000,Kaylor Jwift,Art,3.3,23,4.8,3
-8000000,Taylor Swift,Singing,3.5,59,2.8,8
-2000000,Eira Nily,Buisness,3.2,90.5,3.5,11
-1000000,Sel mez,Composition,4,63,2.1,7
-4000000,Bel Kez,Accounting,2,69,2.8,5
