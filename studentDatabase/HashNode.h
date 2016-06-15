@@ -15,11 +15,11 @@ private:
 	value_type value;
 
 public:
-	HashNode() {}
-	HashNode(key_type key, value_type value) { this->key = key; this->value = value; }
-	int get_key() { return key; }
-	value_type get_value() { return value; }
-	void set_value(value_type value) { this->value = value; }
+	HashNode() {} // default constructor
+	HashNode(key_type key, value_type value) { this->key = key; this->value = value; } // constructor with 2 constructors
+	int get_key() { return key; } // function to return the key
+	value_type get_value() { return value; } //  function to return the value of the specific key
+	void set_value(value_type value) { this->value = value; } // function to set the value
 };
 
 #endif
