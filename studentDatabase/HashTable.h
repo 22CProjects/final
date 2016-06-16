@@ -13,19 +13,19 @@ const int HASH_TABLE_SIZE = 40;
 template <class key_type, class value_type>
 class HashTable
 {
-	private:
-		Node<key_type, value_type> ** hash_table;		// creation of the hash table
-		int pseudo_array[HASH_TABLE_SIZE];    // created an array to hold a random set of numbers to
-																					// use pseudo random probing
+private:
+	Node<key_type, value_type> ** hash_table;		// creation of the hash table
+	int pseudo_array[HASH_TABLE_SIZE];    // created an array to hold a random set of numbers to
+	// use pseudo random probing
 
-	public:
-		HashTable();		// default constructor
-		~HashTable();		// deconstructor
-		void insert(key_type key, value_type value);  // creation of the insertion function to input data in to the hash table
-		value_type find(key_type key);		// creation of the function to find the object by the key
-		void remove(key_type key);			// creation of the function to remove an element from the hash table
-		void print_table();			// function to print the table in hash order
-		void save_to_file(ofstream & output_file);   // function to print the hash table to a file
+public:
+	HashTable();		// default constructor
+	~HashTable();		// deconstructor
+	void insert(key_type key, value_type value);  // creation of the insertion function to input data in to the hash table
+	value_type find(key_type key);		// creation of the function to find the object by the key
+	void remove(key_type key);			// creation of the function to remove an element from the hash table
+	void print_table();			// function to print the table in hash order
+	void save_to_file(ofstream & output_file);   // function to print the hash table to a file
 };
 
 // The default constructor
@@ -33,7 +33,7 @@ template <class key_type, class value_type>
 HashTable<key_type, value_type>::HashTable()
 {
 	hash_table = new Node<key_type, value_type>*[HASH_TABLE_SIZE]; // dynamic allocation for the hash table
-	srand( (unsigned int)time(NULL) ); // using the srand function and time function to get different random everytime the program is ran
+	srand((unsigned int)time(NULL)); // using the srand function and time function to get different random everytime the program is ran
 	for (int i = 0; i < HASH_TABLE_SIZE; i++)
 	{
 		hash_table[i] = NULL; // setting every element in the hash table to null
@@ -50,7 +50,7 @@ HashTable<key_type, value_type>::~HashTable()
 	for (int i = 0; i < HASH_TABLE_SIZE; i++)
 	{
 		if (hash_table[i] != NULL && hash_table[i] != DeletedNode<key_type, value_type>::getUniqueDeletedNode()) //checking if the element is equal to
-																																																						// null or a deleted node
+			// null or a deleted node
 		{
 			delete hash_table[i]; // deleting every element in the hash table
 		}
@@ -70,7 +70,7 @@ void HashTable<key_type, value_type>::insert(key_type key, value_type value)
 	int counter = 0;
 
 	while (hash_key != first_hash && (hash_table[hash_key] == DeletedNode<key_type, value_type>::getUniqueDeletedNode() || hash_table[hash_key] != NULL && hash_table[hash_key]->get_key() != key))
-	// checking if the element is equal to null or a deleted node
+		// checking if the element is equal to null or a deleted node
 	{
 		if (first_hash == -1)
 		{
@@ -166,7 +166,7 @@ void HashTable<key_type, value_type>::print_table()
 		if (hash_table[i] == DeletedNode<key_type, value_type>::getUniqueDeletedNode() || hash_table[i] != NULL)
 		{
 			if (hash_table[i]->get_key() != DeletedNode<key_type, value_type>::getUniqueDeletedNode()->get_key())
-			cout << "Key: " << hash_table[i]->get_key() << " " << " Student Info - " << hash_table[i]->get_value() << endl;
+				cout << "Key: " << hash_table[i]->get_key() << " " << " Student Info - " << hash_table[i]->get_value() << endl;
 		}
 	}
 	cout << endl;

@@ -187,7 +187,7 @@ class BinarySearchTree
 			leftTreePtr, const BinarySearchTree<DataType, KeyType>* rightTreePtr); // Definition below
 
 		BinarySearchTree(const BinarySearchTree<DataType, KeyType>& treePtr) { rootPtr = copyTree(treePtr.rootPtr); }// copy constructor
-		virtual ~BinarySearchTree()											 { destroyTree(rootPtr); }				 // Destructor
+		~BinarySearchTree()													 { destroyTree(rootPtr); }				 // Destructor
 
 
 		//------------------------------------------------------------
@@ -297,18 +297,9 @@ BinaryNode<DataType, KeyType>* BinarySearchTree<DataType, KeyType>::copyTree(con
 	{
 		if (subTreePtr == nullptr)
 			return 0;
-		else if (subTreePtr->isLeaf())
-			return 0;
-		else if (subTreePtr->getLeftChildPtr() == nullptr){
-			return  1 + getHeightHelper(subTreePtr->getRightChildPtr());
-		}
-		else if (subTreePtr->getRightChildPtr() == nullptr){
-			return 1 + getHeightHelper(subTreePtr->getLeftChildPtr());
-		}
-		else{
+		else
 			return 1 + max(getHeightHelper(subTreePtr->getLeftChildPtr()),
 				getHeightHelper(subTreePtr->getRightChildPtr()));
-		}
 	} // end getHeightHelper 
 
 

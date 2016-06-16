@@ -32,9 +32,6 @@
     <ClInclude Include="DeletedNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DeletedNoded.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HashNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>

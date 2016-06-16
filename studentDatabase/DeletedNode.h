@@ -17,10 +17,10 @@ template <class key_type, class value_type>
 DeletedNode<key_type, value_type> * DeletedNode<key_type, value_type>::getUniqueDeletedNode()
 {
 	if (entry == NULL)
-		entry = new DeletedNode(); 
+		entry = new DeletedNode();
 	return entry;
 }
 
 // creation of a deleted node pointer to null 
 template <class key_type, class value_type>
-DeletedNode<key_type, value_type> * DeletedNode<key_type, value_type>::entry = NULL; 
+DeletedNode<key_type, value_type> * DeletedNode<key_type, value_type>::entry = NULL;

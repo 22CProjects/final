@@ -71,7 +71,6 @@
     <ClInclude Include="BinaryNode.h" />
     <ClInclude Include="BinarySearchTree.h" />
     <ClInclude Include="DeletedNode.h" />
-    <ClInclude Include="DeletedNoded.h" />
     <ClInclude Include="HashNode.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="Head.h" />

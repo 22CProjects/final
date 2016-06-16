@@ -11,19 +11,51 @@ template <class DataType, class KeyType>
 class AVLTree : public BinarySearchTree<DataType, KeyType>
 {
 	protected:
-		BinaryNode<DataType, KeyType>* insert(BinaryNode<DataType, KeyType>* root, BinaryNode<DataType, KeyType>* newNodePtr);
-
+		/*********************************************************************
+			Rotation methods 
+			  - Parameter: a BinaryNode pointer point to a node of the tree
+			  - Return: a BinaryNode pointer
+		*********************************************************************/
+		BinaryNode<DataType, KeyType>* RR_rotation(BinaryNode<DataType, KeyType>* root);	// Left Rotation
+		BinaryNode<DataType, KeyType>* LL_rotation(BinaryNode<DataType, KeyType>* root);	// Right Rotation
+		BinaryNode<DataType, KeyType>* RL_rotation(BinaryNode<DataType, KeyType>* root);	// Right then left rotation
+		BinaryNode<DataType, KeyType>* LR_rotation(BinaryNode<DataType, KeyType>* root);	// Left then right rotation
+		
+		/*********************************************************************
+			balanceFactor
+				- Calculates and returns the difference in height of 2 branches
+				- Parameter: a BinaryNode pointer point to a node of the tree
+				- Return: an integer (difference in height)
+		*********************************************************************/
 		int balanceFactor(BinaryNode<DataType, KeyType>* root);
 		
+		/*********************************************************************
+			balance
+			- bases on the height difference calculated in balanceFactor
+			  the tree will rotate right or left accordingly to make it balance
+			- Parameter: a BinaryNode pointer point to a node of the tree
+			- Return: a BinaryNode pointer
+		*********************************************************************/
 		BinaryNode<DataType, KeyType>* balance(BinaryNode<DataType, KeyType>* root);
 
-		BinaryNode<DataType, KeyType>* RR_rotation(BinaryNode<DataType, KeyType>* root);
-		BinaryNode<DataType, KeyType>* LL_rotation(BinaryNode<DataType, KeyType>* root);
-		BinaryNode<DataType, KeyType>* RL_rotation(BinaryNode<DataType, KeyType>* root);
-		BinaryNode<DataType, KeyType>* LR_rotation(BinaryNode<DataType, KeyType>* root);
-
+		/*********************************************************************
+			insert
+			- it inserts a newnode, and balance it if it's imbalance
+			- Parameter: 
+			    + a BinaryNode pointer point to a node of the tree
+				+ a BinaryNode pointer point to the new node to insert
+			- Return: a BinaryNode pointer
+		*********************************************************************/
+		BinaryNode<DataType, KeyType>* insert(BinaryNode<DataType, KeyType>* root, BinaryNode<DataType, KeyType>* newNodePtr);
+		
+		/*********************************************************************
+			removeValue
+			- instead of just return subTreePtr, this virtual function derived 
+			  from BST returns balance(subTreePtr) to balance the tree after 
+			  delete a node
+		*********************************************************************/
 		BinaryNode<DataType, KeyType>* removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success);
-
+		
 
 	public:
 		//CONSTRUCTORS:
@@ -36,14 +68,15 @@ class AVLTree : public BinarySearchTree<DataType, KeyType>
 		//~AVLTree();
 
 
-		bool avlAdd(const KeyType&, DataType*);
-		bool avlRemove(KeyType target);													// Removes a node
+		bool avlAdd(const KeyType&, DataType*);			// to add a new node from main
+		bool avlRemove(KeyType target);					// to removes a node from main
 		
 		
 
 };
 #endif 
 
+// BALANCE FACTOR
 template<class DataType, class KeyType>
 int AVLTree<DataType, KeyType>::balanceFactor(BinaryNode<DataType, KeyType>* root)
 {
@@ -61,45 +94,54 @@ int AVLTree<DataType, KeyType>::balanceFactor(BinaryNode<DataType, KeyType>* roo
 	}
 	else
 	return getHeightHelper(root->getLeftChildPtr()) - getHeightHelper(root->getRightChildPtr());
-}
+} // End balanceFactor
 
+
+// LEFT ROTATION
 template<class DataType, class KeyType>
-BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::RR_rotation(BinaryNode<DataType, KeyType>* root) // Rotate left
+BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::RR_rotation(BinaryNode<DataType, KeyType>* root) 
 {
 	BinaryNode<DataType, KeyType>* nodePtr = root->getRightChildPtr();
 	root->setRightChildPtr(nodePtr->getLeftChildPtr());
 	nodePtr->setLeftChildPtr(root);
 	
 	return nodePtr;
-}
+} // end left rotation
 
+
+// RIGHT ROTATION
 template<class DataType, class KeyType>
-BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::LL_rotation(BinaryNode<DataType, KeyType>* root) // Rotate right
+BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::LL_rotation(BinaryNode<DataType, KeyType>* root) 
 {
 	BinaryNode<DataType, KeyType>* nodePtr = root->getLeftChildPtr();
 	root->setLeftChildPtr(nodePtr->getRightChildPtr());
 	nodePtr->setRightChildPtr(root);
 
 	return nodePtr;
-}
+} // End right rotation
 
+
+// RIGHT --> LEFT
 template<class DataType, class KeyType>
 BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::RL_rotation(BinaryNode<DataType, KeyType>* root)
 {
 	BinaryNode<DataType, KeyType>* nodePtr = root->getRightChildPtr();
 	root->setRightChildPtr(LL_rotation(nodePtr));
 	return RR_rotation(root);
-}
+}// end RL_rotation
 
+
+// LEFT --> RIGHT
 template<class DataType, class KeyType>
 BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::LR_rotation(BinaryNode<DataType, KeyType>* root)
 {
 	BinaryNode<DataType, KeyType>* nodePtr = root->getLeftChildPtr();
 	root->setLeftChildPtr(RR_rotation(nodePtr));
 	return LL_rotation(root);
-}
+} // end LR_rotation
 
 
+// BALANCE the tree
 template<class DataType, class KeyType>
 BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::balance(BinaryNode<DataType, KeyType>* root)
 {
@@ -120,9 +162,10 @@ BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::balance(BinaryNode<Da
 			root = RR_rotation(root);
 	}
 	return root;
-}
+}// end balance
 
 
+// INSERT a node to the tree, and balance if the tree is imbalance
 template<class DataType, class KeyType>
 BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::insert(BinaryNode<DataType, KeyType>* root, BinaryNode<DataType, KeyType>* newNodePtr)
 {
@@ -141,6 +184,8 @@ BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::insert(BinaryNode<Dat
 	return balance(root);
 }
 
+
+// avlAdd
 template<class DataType, class KeyType>
 bool AVLTree<DataType, KeyType>::avlAdd(const KeyType& newKey, DataType* newData)
 {
