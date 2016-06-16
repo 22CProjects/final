@@ -340,16 +340,21 @@ void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int
 	- Return: none
 ****************************************************************************************/
 void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
-	cout << deletedStudents.peek()<<endl;
 
-	StudentData* moreStu = &deletedStudents.peek();//missing some data fields (the string values)
+	if (!deletedStudents.isEmpty())
+	{
+		cout << "Deleting " << "\"" << deletedStudents.peek() << "\"" << endl;
 
-	deletedStudents.pop();
-	cout << "Adding " << moreStu->getName() << " (" << moreStu->getID() << ") back into the system"<<endl;
-	stu.addTop(*moreStu);
-	stu_tree.avlAdd(stu.get_node_data(*moreStu).getID(), stu.get_node_address(*moreStu));
-	stu_hash.insert(stu.get_node_data(*moreStu).getID(), *stu.get_node_address(*moreStu));
-	cout << *moreStu << endl;
+		StudentData moreStu = deletedStudents.peek();//missing some data fields (the string values)
+		deletedStudents.pop();
+
+		stu.addTop(moreStu);
+		stu_tree.avlAdd(stu.get_node_data(moreStu).getID(), stu.get_node_address(moreStu));
+		stu_hash.insert(stu.get_node_data(moreStu).getID(), *stu.get_node_address(moreStu));
+		cout << "Added    " << "\"" << moreStu << "\"" << " back into the system\n" << endl;
+	}
+	else
+		cout << "There is no deleted Students\n";
 }
 
 
