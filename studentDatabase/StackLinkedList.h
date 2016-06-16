@@ -1,3 +1,4 @@
+/*	Anna Houk, Kiera Nguyen, Michael Phan*/
 /* Specification and implementation of StackLinkedList ADT (derived from SinglyLinkedList) */
 #pragma once
 

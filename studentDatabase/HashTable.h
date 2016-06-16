@@ -1,3 +1,4 @@
+/*	Anna Houk, Kiera Nguyen, Michael Phan*/
 #ifndef HASTTABLE_H
 #define HASTTABLE_H
 
@@ -169,7 +170,7 @@ int HashTable<value_type, key_type>::print_table()
 		if (hash_table[i] == DeletedNode<value_type, key_type>::getUniqueDeletedNode() || hash_table[i] != NULL)
 		{
 			if (hash_table[i]->get_key() != DeletedNode<value_type, key_type>::getUniqueDeletedNode()->get_key())
-				cout << "Key: " << hash_table[i]->get_key() << " " << " Student Info - " << hash_table[i]->get_value() << endl;
+				cout << "Key: " << hash_table[i]->get_key() << " " <<  endl;
 			++count;
 		}
 	}

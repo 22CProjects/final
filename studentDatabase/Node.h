@@ -1,3 +1,4 @@
+/*	Anna Houk, Kiera Nguyen, Michael Phan*/
 /* Specification and implementation of Node ADT */
 #ifndef _NODE
 #define _NODE

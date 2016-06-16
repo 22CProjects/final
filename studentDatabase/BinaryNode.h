@@ -1,3 +1,4 @@
+/*	Anna Houk, Kiera Nguyen, Michael Phan*/
 #ifndef _BINARYNODE
 #define _BINARYNODE
 

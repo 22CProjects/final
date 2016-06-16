@@ -1,3 +1,4 @@
+/*	Anna Houk, Kiera Nguyen, Michael Phan*/
 #include "HashNode.h"
 
 template <class key_type, class value_type>

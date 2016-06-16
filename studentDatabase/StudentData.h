@@ -1,5 +1,6 @@
 /************************************************************
 	StudentData class 
+	Author				Anna Houk, Kiera Nguyen, Michael Phan
 ************************************************************/
 #ifndef _STUDENT_DATA
 #define _STUDENT_DATA

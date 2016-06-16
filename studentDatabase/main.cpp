@@ -42,6 +42,8 @@ int main()
 	HashTable<StudentData, int> stu_hash;
 	StackLinkedList<StudentData> deletedStudents;
 
+	cout << "Welcome to the Student Datadase" << endl;
+
 	// Read student info from a file
 	readFile(stu, stu_tree, stu_hash);
 	
@@ -51,7 +53,8 @@ int main()
 	}
 
 	saveFile(stu_tree);
-
+	
+	cout << "Goodbye"<<endl;
 	system("pause");
 	return 0;
 }//end main
@@ -150,8 +153,10 @@ bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tre
 		<< "(5) List Students in sorted ID sequence\n"
 		<< "(6) Print Tree \n"
 		<< "(7) Efficiency [Add, Delete & List students]\n"
-		<< "(8) Undo last delete\n"
-		<< "(9) Quit\n";
+		<< "(8) Count collisions\n"
+		<< "(9) Undo last delete\n"
+		<< "(10) Save to file\n"
+		<< "(11)Quit\n";
 	cin >> choice;
 	switch (choice){
 	case 1: count = addStudent(stu, stu_tree, stu_hash);break;
@@ -161,8 +166,10 @@ bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tre
 	case 5: cout << "[Student IDs in sorted sequence]\n"; count = stu_tree.inorderTraverse(print); break;
 	case 6: cout << "[Tree visual - student IDs]\n"; stu_tree.print_tree(); break;
 	case 7: cout << "Efficiency: " << count << " cycles" << endl; count = 0; break;
-	case 8: undoDelete(stu, stu_tree, stu_hash, deletedStudents); break;
-	case 9: return false; 
+	case 8: stu_hash.print_collisions(); break;
+	case 9: undoDelete(stu, stu_tree, stu_hash, deletedStudents); break;
+	case 10: cout << "Saving tree to file..." << endl; saveFile(stu_tree); break;
+	case 11: cout << "Quitting program..." << endl; return false;
 	default: cout << "Invalid option\n"; break;
 	}
 	return true;
@@ -371,7 +378,7 @@ void saveFile(AVLTree<StudentData, int>& stu_tree){
 
 	ofstream outFile;
 
-	outFile.open("StudentOut.txt");
+	outFile.open("student.txt");
 	stu_tree.save_to_file(outFile);
 
 	outFile.close();

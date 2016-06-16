@@ -1,3 +1,4 @@
+/*	Anna Houk, Kiera Nguyen, Michael Phan*/
 /* Specification and implementation of Head ADT (Derived from Node) */
 #ifndef _HEAD
 #define _HEAD

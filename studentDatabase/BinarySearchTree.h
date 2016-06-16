@@ -1,3 +1,4 @@
+/*	Anna Houk, Kiera Nguyen, Michael Phan*/
 #pragma once
 
 #include "BinaryNode.h"
