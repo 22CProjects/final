@@ -15,30 +15,30 @@ class HashTable
 {
 private:
 	HashNode<value_type, key_type> ** hash_table;		// creation of the hash table
-	int pseudo_array[HASH_TABLE_SIZE];    // created an array to hold a random set of numbers to
-	// use pseudo random probing
+	int pseudo_array[HASH_TABLE_SIZE];					// created an array to hold a random set of numbers to
+														// use pseudo random probing
 
 public:
-	HashTable();		// default constructor
-	~HashTable();		// deconstructor
-	void insert(key_type key, value_type value);  // creation of the insertion function to input data in to the hash table
-	value_type find(key_type key);		// creation of the function to find the object by the key
-	void remove(key_type key);			// creation of the function to remove an element from the hash table
-	void print_table();			// function to print the table in hash order
-	void save_to_file(ofstream & output_file);   // function to print the hash table to a file
+	HashTable();										// default constructor
+	~HashTable();										// deconstructor
+	void insert(key_type key, value_type value);		// creation of the insertion function to input data in to the hash table
+	value_type find(key_type key);						// creation of the function to find the object by the key
+	void remove(key_type key);							// creation of the function to remove an element from the hash table
+	void print_table();									// function to print the table in hash order
+	void save_to_file(ofstream & output_file);			// function to print the hash table to a file
 };
 
 // The default constructor
 template <class value_type, class key_type>
 HashTable<value_type, key_type>::HashTable()
 {
-	hash_table = new HashNode<value_type, key_type>*[HASH_TABLE_SIZE]; // dynamic allocation for the hash table
-	srand((unsigned int)time(NULL)); // using the srand function and time function to get different random everytime the program is ran
+	hash_table = new HashNode<value_type, key_type>*[HASH_TABLE_SIZE];	// dynamic allocation for the hash table
+	srand((unsigned int)time(NULL));									// using the srand function and time function to get different random everytime the program is ran
 	for (int i = 0; i < HASH_TABLE_SIZE; i++)
 	{
-		hash_table[i] = NULL; // setting every element in the hash table to null
-		int x = rand() % 30; // picking a random number between 0-29 to put into the pseudo random array
-		pseudo_array[i] = x; // putting the random number in to the array
+		hash_table[i] = NULL;							// setting every element in the hash table to null
+		int x = rand() % 30;							// picking a random number between 0-29 to put into the pseudo random array
+		pseudo_array[i] = x;							// putting the random number in to the array
 	}
 
 }
@@ -50,7 +50,7 @@ HashTable<value_type, key_type>::~HashTable()
 	for (int i = 0; i < HASH_TABLE_SIZE; i++)
 	{
 		if (hash_table[i] != NULL && hash_table[i] != DeletedNode<value_type, key_type>::getUniqueDeletedNode()) //checking if the element is equal to
-			// null or a deleted node
+																												 // null or a deleted node
 		{
 			delete hash_table[i]; // deleting every element in the hash table
 		}
