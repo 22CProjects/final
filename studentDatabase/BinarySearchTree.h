@@ -74,7 +74,7 @@ class BinarySearchTree
 				+ a booline to indicate successfully found or not
 			- Return: a BinaryNode pointer to the node found
 		*************************************************************************************/
-		BinaryNode<DataType, KeyType>* findNode(BinaryNode<DataType, KeyType>* treePtr, const KeyType& targetKey, bool& success);
+		BinaryNode<DataType, KeyType>* findNode(BinaryNode<DataType, KeyType>* treePtr, const KeyType& targetKey, bool& success, int& count);
 
 
 		
@@ -106,7 +106,7 @@ class BinarySearchTree
 				2. Visit the root.
 				3. Traverse the right subtree, i.e., call Inorder(right-subtree)
 			*************************************************************************************/
-			void inorder(void visit(int&), BinaryNode<DataType, KeyType>* treePtr) const;
+			void inorder(void visit(int&), BinaryNode<DataType, KeyType>* treePtr, int& count) const;
 
 
 			/*************************************************************************************
@@ -205,7 +205,7 @@ class BinarySearchTree
 		bool remove(KeyType targetKey);															// Removes a node
 		void clear() { destroyTree(rootPtr); }													// Delete all nodes of the tree
 
-		DataType* getEntry_address(const KeyType& anEntryKey);									// Get address of a data
+		DataType* getEntry_address(const KeyType& anEntryKey, int& count);						// Get address of a data
 		bool is_contained(const KeyType& anEntryKey);											// Check if an entry is existed in the tree
 		
 
@@ -214,7 +214,7 @@ class BinarySearchTree
 		//------------------------------------------------------------
 		// Public Traversals Section.
 		//------------------------------------------------------------
-		void inorderTraverse(void visit(int&)) const	{ inorder(visit, rootPtr); }
+		int  inorderTraverse(void visit(int&)) const	{ int count = 0; inorder(visit, rootPtr, count); return count; }
 		void postorderTraverse(void visit(int&)) const	{ postorder(visit, rootPtr); }
 		void preorderTraverse(void visit(int&)) const	{ preorder(visit, rootPtr); }
 
@@ -330,8 +330,9 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 //-----------------------------------------------------------------------------------------
 	// FIND NODE
 	template<class DataType, class KeyType>
-	BinaryNode<DataType, KeyType>* BinarySearchTree<DataType, KeyType>::findNode(BinaryNode<DataType, KeyType>* treePtr, const KeyType& targetKey, bool& success)
+	BinaryNode<DataType, KeyType>* BinarySearchTree<DataType, KeyType>::findNode(BinaryNode<DataType, KeyType>* treePtr, const KeyType& targetKey, bool& success, int& count)
 	{
+		++count;
 		if (treePtr == nullptr)
 		{
 			success = false;
@@ -345,19 +346,19 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 		}
 
 		else if (targetKey < treePtr->get_key())
-			return findNode(treePtr->getLeftChildPtr(), targetKey, success);
+			return findNode(treePtr->getLeftChildPtr(), targetKey, success, count);
 		else
-			return findNode(treePtr->getRightChildPtr(), targetKey, success);
-		
+			return findNode(treePtr->getRightChildPtr(), targetKey, success, count);
+
 	} // end findNode
 
 
 	// GET ENTRY
 	template<class DataType, class KeyType>
-	DataType* BinarySearchTree<DataType, KeyType>::getEntry_address(const KeyType& anEntryKey)
+	DataType* BinarySearchTree<DataType, KeyType>::getEntry_address(const KeyType& anEntryKey, int& count)
 	{
 		bool isFound = false;
-		BinaryNode<DataType, KeyType>* entry_address = findNode(rootPtr, anEntryKey, isFound);
+		BinaryNode<DataType, KeyType>* entry_address = findNode(rootPtr, anEntryKey, isFound, count);
 		return entry_address->getItemPtr();
 	}
 
@@ -366,10 +367,10 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 	bool BinarySearchTree<DataType, KeyType>::is_contained(const KeyType& anEntryKey)
 	{
 		bool isFound = false;
-		BinaryNode<DataType, KeyType>* result = findNode(rootPtr, anEntryKey, isFound);
+		int count = 0;
+		BinaryNode<DataType, KeyType>* result = findNode(rootPtr, anEntryKey, isFound, count);
 		return isFound;
 	}
-
 
 
 
@@ -573,16 +574,17 @@ void BinarySearchTree<DataType, KeyType>::destroyTree(BinaryNode<DataType, KeyTy
 
 	// IN ORDER
 	template< class DataType, class KeyType>
-	void BinarySearchTree<DataType, KeyType>::inorder(void visit(int&), BinaryNode<DataType, KeyType>* treePtr) const
+	void BinarySearchTree<DataType, KeyType>::inorder(void visit(int&), BinaryNode<DataType, KeyType>* treePtr, int& count) const
 	{
+		++count;
 		if (treePtr != nullptr)
 		{
-			inorder(visit, treePtr->getLeftChildPtr());
+			inorder(visit, treePtr->getLeftChildPtr(), count);
 
 			KeyType theItemKey = treePtr->get_key();
 			visit(theItemKey);
 
-			inorder(visit, treePtr->getRightChildPtr());
+			inorder(visit, treePtr->getRightChildPtr(), count);
 
 		} // end if
 	} // end inorder 
@@ -628,16 +630,16 @@ template<class DataType, class KeyType>
 void  BinarySearchTree<DataType, KeyType>::print_helper(BinaryNode<DataType, KeyType>* root, int level){
 	if (root == nullptr)
 			return;
-		print_helper(root->getRightChildPtr(), level + 1);
-		if (level != 0){
-			for (int i = 0; i < level - 1; i++){
-				cout<<"|\t";
-			}
-			cout<<"|-------" << root->get_key()<<endl;
+	print_helper(root->getRightChildPtr(), level + 1);
+	if (level != 0){
+		for (int i = 0; i < level - 1; i++){
+			cout<<"|\t";
 		}
-		else
-			cout<<root->get_key()<<endl;
-		print_helper(root->getLeftChildPtr(), level + 1);
+		cout<<"|-------" << root->get_key()<<endl;
+	}
+	else
+		cout<<root->get_key()<<endl;
+	print_helper(root->getLeftChildPtr(), level + 1);
 } // End print_helper
 
 

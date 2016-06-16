@@ -25,16 +25,17 @@ using namespace std;
 
 //Prototypes
 void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash);
-bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
-void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash);
-void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
-void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash);
+bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents, int& count);
+int addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash);
+int deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
+void findStudent(HashTable<StudentData, int>& stu_hash);
 void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents);
 void saveFile(AVLTree<StudentData, int>& stu_tree);
 
 
 int main()
 {
+	int count = 0;						// to count cycles to calculate efficiency
 	bool cont = true;
 	SinglyLinkedList<StudentData> stu;
 	AVLTree<StudentData, int> stu_tree;
@@ -46,7 +47,7 @@ int main()
 	
 	while (cont == true)
 	{
-		cont = menu(stu, stu_tree, stu_hash, deletedStudents);
+		cont = menu(stu, stu_tree, stu_hash, deletedStudents, count);
 	}
 
 	saveFile(stu_tree);
@@ -79,7 +80,7 @@ void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu
 {
 	ifstream  inputFile;	// to hold the input file
 	string    line;			// to temporarily hold each line of string from the file 
-	
+	int		  count = 0;
 
 	string id, n, m, gpa, credits, yr, curUnit;
 
@@ -117,7 +118,7 @@ void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu
 
 			stu.addEnd(*s);
 
-			stu_tree.avlAdd(id_convert, stu.get_node_address(*s));
+			stu_tree.avlAdd(id_convert, stu.get_node_address(*s), count);
 			stu_hash.insert(id_convert, stu.get_node_address(*s));
 		
 			delete s;
@@ -139,7 +140,7 @@ void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu
 		+ A reference of StackLinkedList
 	- Return: a boolean
 ****************************************************************************************/
-bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
+bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents, int& count){
 	int choice;
 	cout << "\nMENU:\n"
 		<< "(1) Add Student\n"
@@ -148,19 +149,19 @@ bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tre
 		<< "(4) List Students in hashtable sequence\n"
 		<< "(5) List Students in sorted ID sequence\n"
 		<< "(6) Print Tree \n"
-		<< "(7) Efficiency\n"
+		<< "(7) Efficiency [Add, Delete & List students]\n"
 		<< "(8) Undo last delete\n"
 		<< "(9) Quit\n";
 	cin >> choice;
 	switch (choice){
-	case 1: addStudent(stu, stu_tree, stu_hash);break;
-	case 2: deleteStudent(stu, stu_tree, stu_hash, deletedStudents); break;
-	case 3: findStudent(stu_tree, stu_hash); break;
-	case 4: cout << "[Student IDs in hashtable sequence]\n"; stu_hash.print_table(); break;
-	case 5: cout << "[Student IDs in sorted sequence]\n"; stu_tree.inorderTraverse(print); break;
+	case 1: count = addStudent(stu, stu_tree, stu_hash);break;
+	case 2: count = deleteStudent(stu, stu_tree, stu_hash, deletedStudents); break;
+	case 3: findStudent(stu_hash); break;
+	case 4: cout << "[Student IDs in hashtable sequence]\n"; count = stu_hash.print_table(); break;
+	case 5: cout << "[Student IDs in sorted sequence]\n"; count = stu_tree.inorderTraverse(print); break;
 	case 6: cout << "[Tree visual - student IDs]\n"; stu_tree.print_tree(); break;
-	case 7: break;//TBD
-	case 8: undoDelete(stu, stu_tree, stu_hash, deletedStudents); break;//has issue...go to function for info
+	case 7: cout << "Efficiency: " << count << " cycles" << endl; count = 0; break;
+	case 8: undoDelete(stu, stu_tree, stu_hash, deletedStudents); break;
 	case 9: return false; 
 	default: cout << "Invalid option\n"; break;
 	}
@@ -177,12 +178,15 @@ bool menu(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tre
 		+ A reference of HashTable
 	- Return: none
 ****************************************************************************************/
-void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash){
+int addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash){
 	int id, y, tu, cu;
 	double gpa = 1.0;
 	string name, major;
 	char conf;
 	bool valid = true;
+	int count = 0; // to count cycles
+
+
 	cout << "[Create a new Student]" << endl;
 	//get user input for all the fields
 	//checking for valid input
@@ -198,6 +202,7 @@ void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& s
 	
 	do{
 		cout << "Enter Name: " << endl;
+		cin.ignore();
 		getline(cin,name);
 		valid = true;
 		if (name.length() < 1){
@@ -247,10 +252,11 @@ void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& s
 	do{
 		if (conf == 'y'){
 			stu.addTop(*moreStu);
-			stu_tree.avlAdd(stu.get_node_data(*moreStu).getID(), stu.get_node_address(*moreStu));
+			stu_tree.avlAdd(stu.get_node_data(*moreStu).getID(), stu.get_node_address(*moreStu), count);
 			stu_hash.insert(stu.get_node_data(*moreStu).getID(), stu.get_node_address(*moreStu));
 			delete moreStu;
 			valid = true;
+			return count;
 		}
 		else if (conf == 'n'){
 			delete moreStu;
@@ -275,21 +281,24 @@ void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& s
 		+ A reference of StackLinkedList
 	- Return: none
 ****************************************************************************************/
-void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
+int deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
 	int id;
+	int count = 0; // to count cycles
+
 	cout << "Enter ID of student to remove from system: ";
 	cin >> id;
 	if (stu_tree.is_contained(id)){
-		StudentData* dStu = stu_tree.getEntry_address(id);
+		StudentData* dStu = stu_tree.getEntry_address(id, count);
 		if (dStu != nullptr){
 			deletedStudents.push(*dStu);//add student to deleted stack
 			cout << "Deleting " << dStu->getName() << " from system . ";
-			stu_tree.avlRemove(id);
+			stu_tree.avlRemove(id, count);
 			cout << ". ";
 			stu_hash.remove(id);
 			cout << ". ";
 			stu.remove(*dStu);
 			cout << "done" << endl;
+			return count;
 		}
 	}
 	else{
@@ -306,7 +315,7 @@ void deleteStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>
 		+ A reference of HashTable
 	- Return: none
 ****************************************************************************************/
-void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash){
+void findStudent(HashTable<StudentData, int>& stu_hash){
 	bool tempBool = false;
 	int id;
 
@@ -314,18 +323,8 @@ void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int
 	cout << "Enter student ID: ";
 	cin >> id;
 	
-	tempBool = stu_tree.is_contained(id);
+	stu_hash.find(id);
 
-	if (tempBool == true)
-	{
-		StudentData* tempStu = nullptr;
-		tempStu = stu_tree.getEntry_address(id);
-		cout << "Found: " << endl
-			<< "[ID, name, major, GPA, total units, total units, years studied, current units]" << endl
-			<< *tempStu << endl;
-	}
-	else
-		cout << "Student "<< id<< "does not exist\n";
 }//end findStudent
 
 
@@ -341,6 +340,8 @@ void findStudent(AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int
 ****************************************************************************************/
 void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu_tree, HashTable<StudentData, int>& stu_hash, StackLinkedList<StudentData> &deletedStudents){
 
+	int count = 0;
+
 	if (!deletedStudents.isEmpty())
 	{
 		cout << "Deleting " << "\"" << deletedStudents.peek() << "\"" << endl;
@@ -349,7 +350,7 @@ void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& s
 		deletedStudents.pop();
 
 		stu.addTop(moreStu);
-		stu_tree.avlAdd(stu.get_node_data(moreStu).getID(), stu.get_node_address(moreStu));
+		stu_tree.avlAdd(stu.get_node_data(moreStu).getID(), stu.get_node_address(moreStu), count);
 		stu_hash.insert(stu.get_node_data(moreStu).getID(), stu.get_node_address(moreStu));
 		cout << "Added    " << "\"" << moreStu << "\"" << " back into the system\n" << endl;
 	}

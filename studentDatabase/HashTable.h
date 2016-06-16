@@ -15,8 +15,8 @@ class HashTable
 {
 private:
 	HashNode<value_type, key_type> ** hash_table;		// creation of the hash table
-	int pseudo_array[HASH_TABLE_SIZE]; // created an array to hold a random set of numbers to
-	// use pseudo random probing
+	int pseudo_array[HASH_TABLE_SIZE];					// created an array to hold a random set of numbers to
+														// use pseudo random probing
 	int collisions = 0;
 
 public:
@@ -25,7 +25,7 @@ public:
 	void insert(key_type key, value_type* value);		// creation of the insertion function to input data in to the hash table
 	value_type* find(key_type key);						// creation of the function to find the object by the key
 	void remove(key_type key);							// creation of the function to remove an element from the hash table
-	void print_table();									// function to print the table in hash order
+	int print_table();									// function to print the table in hash order
 	void save_to_file(ofstream & output_file);			// function to print the hash table to a file
 	void count_collisions(key_type key);
 	void print_collisions() { cout << "Number of collisions: " << collisions << endl; };
@@ -53,7 +53,7 @@ HashTable<value_type, key_type>::~HashTable()
 	for (int i = 0; i < HASH_TABLE_SIZE; i++)
 	{
 		if (hash_table[i] != NULL && hash_table[i] != DeletedNode<value_type, key_type>::getUniqueDeletedNode()) //checking if the element is equal to
-																												 // null or a deleted node
+			// null or a deleted node
 		{
 			delete hash_table[i]; // deleting every element in the hash table
 		}
@@ -71,9 +71,9 @@ void HashTable<value_type, key_type>::insert(key_type key, value_type* value)
 	int first_hash = -1;
 	int deleted_node = -1;
 	int counter = 0;
-	
+
 	// checking if the element is equal to null or a deleted node
-	while (hash_key != first_hash && (hash_table[hash_key] == DeletedNode<value_type, key_type>::getUniqueDeletedNode() || hash_table[hash_key] != NULL && hash_table[hash_key]->get_key() != key))	
+	while (hash_key != first_hash && (hash_table[hash_key] == DeletedNode<value_type, key_type>::getUniqueDeletedNode() || hash_table[hash_key] != NULL && hash_table[hash_key]->get_key() != key))
 	{
 		if (first_hash == -1)
 		{
@@ -159,20 +159,22 @@ void HashTable<value_type, key_type>::remove(key_type key)
 	}
 }
 
-
 // Print table function
 template <class value_type, class key_type>
-void HashTable<value_type, key_type>::print_table()
+int HashTable<value_type, key_type>::print_table()
 {
+	int count = 0;
 	for (int i = 0; i < HASH_TABLE_SIZE; i++)
 	{
 		if (hash_table[i] == DeletedNode<value_type, key_type>::getUniqueDeletedNode() || hash_table[i] != NULL)
 		{
 			if (hash_table[i]->get_key() != DeletedNode<value_type, key_type>::getUniqueDeletedNode()->get_key())
-				cout << "Key: " << hash_table[i]->get_key() << " " << " Student Info - " << *hash_table[i]->get_value() << endl;
+				cout << "Key: " << hash_table[i]->get_key() << " " << " Student Info - " << hash_table[i]->get_value() << endl;
+			++count;
 		}
 	}
 	cout << endl;
+	return count;
 }
 
 // Save to File function
@@ -201,3 +203,4 @@ void HashTable<value_type, key_type>::count_collisions(key_type key)
 	}
 }
 #endif
+

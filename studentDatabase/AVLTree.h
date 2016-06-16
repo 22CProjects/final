@@ -46,7 +46,7 @@ class AVLTree : public BinarySearchTree<DataType, KeyType>
 				+ a BinaryNode pointer point to the new node to insert
 			- Return: a BinaryNode pointer
 		*********************************************************************/
-		BinaryNode<DataType, KeyType>* insert(BinaryNode<DataType, KeyType>* root, BinaryNode<DataType, KeyType>* newNodePtr);
+		BinaryNode<DataType, KeyType>* insert(BinaryNode<DataType, KeyType>* root, BinaryNode<DataType, KeyType>* newNodePtr, int& count);
 		
 		/*********************************************************************
 			removeValue
@@ -54,7 +54,7 @@ class AVLTree : public BinarySearchTree<DataType, KeyType>
 			  from BST returns balance(subTreePtr) to balance the tree after 
 			  delete a node
 		*********************************************************************/
-		BinaryNode<DataType, KeyType>* removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success);
+		BinaryNode<DataType, KeyType>* removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success, int& count);
 		
 
 	public:
@@ -68,8 +68,8 @@ class AVLTree : public BinarySearchTree<DataType, KeyType>
 		//~AVLTree();
 
 
-		bool avlAdd(const KeyType&, DataType*);			// to add a new node from main
-		bool avlRemove(KeyType target);					// to removes a node from main
+		bool avlAdd(const KeyType&, DataType*,int& count);			// to add a new node from main
+		bool avlRemove(KeyType target, int& count);					// to removes a node from main
 		
 		
 
@@ -167,18 +167,19 @@ BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::balance(BinaryNode<Da
 
 // INSERT a node to the tree, and balance if the tree is imbalance
 template<class DataType, class KeyType>
-BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::insert(BinaryNode<DataType, KeyType>* root, BinaryNode<DataType, KeyType>* newNodePtr)
+BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::insert(BinaryNode<DataType, KeyType>* root, BinaryNode<DataType, KeyType>* newNodePtr, int& count)
 {
+	++count;
 	if (root == nullptr){
 		return newNodePtr;
 	}
-		
+
 	else if (newNodePtr->get_key() < root->get_key()){
-		root->setLeftChildPtr(insert(root->getLeftChildPtr(), newNodePtr));
+		root->setLeftChildPtr(insert(root->getLeftChildPtr(), newNodePtr, count));
 	}
-		
+
 	else{
-		root->setRightChildPtr(insert(root->getRightChildPtr(), newNodePtr));
+		root->setRightChildPtr(insert(root->getRightChildPtr(), newNodePtr, count));
 	}
 
 	return balance(root);
@@ -187,10 +188,10 @@ BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::insert(BinaryNode<Dat
 
 // avlAdd
 template<class DataType, class KeyType>
-bool AVLTree<DataType, KeyType>::avlAdd(const KeyType& newKey, DataType* newData)
+bool AVLTree<DataType, KeyType>::avlAdd(const KeyType& newKey, DataType* newData, int& count)
 {
 	BinaryNode<DataType, KeyType>* newNodePtr = new BinaryNode<DataType, KeyType>(newKey, newData);
-	set_rootPtr(insert(getRootPtr(), newNodePtr));
+	set_rootPtr(insert(getRootPtr(), newNodePtr, count));
 	nodeCounter++;
 	return true;
 }
@@ -198,10 +199,10 @@ bool AVLTree<DataType, KeyType>::avlAdd(const KeyType& newKey, DataType* newData
 
 // REMOVE
 template< class DataType, class KeyType>
-bool AVLTree<DataType, KeyType>::avlRemove(KeyType target)
+bool AVLTree<DataType, KeyType>::avlRemove(KeyType target, int& count)
 {
 	bool success = false;
-	set_rootPtr(removeValue(getRootPtr(), target, success));
+	set_rootPtr(removeValue(getRootPtr(), target, success, count));
 	if (success == true) nodeCounter--;
 	return success;
 } // end remove
@@ -210,10 +211,10 @@ bool AVLTree<DataType, KeyType>::avlRemove(KeyType target)
 // REMOVE VALUE
 template< class DataType, class KeyType>
 BinaryNode<DataType, KeyType>* AVLTree<DataType, KeyType>::
-removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success)
+removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& success, int& count)
 {
 	BinaryNode<DataType, KeyType>* tempPtr = nullptr;
-
+	++count;
 	if (subTreePtr == nullptr)
 	{
 		success = false;
@@ -227,12 +228,12 @@ removeValue(BinaryNode<DataType, KeyType>* subTreePtr, KeyType targetKey, bool& 
 	}
 	else if (subTreePtr->get_key() > targetKey)
 	{
-		tempPtr = removeValue(subTreePtr->getLeftChildPtr(), targetKey, success);
+		tempPtr = removeValue(subTreePtr->getLeftChildPtr(), targetKey, success, count);
 		subTreePtr->setLeftChildPtr(tempPtr);
 	}
 	else
 	{
-		tempPtr = removeValue(subTreePtr->getRightChildPtr(), targetKey, success);
+		tempPtr = removeValue(subTreePtr->getRightChildPtr(), targetKey, success, count);
 		subTreePtr->setRightChildPtr(tempPtr);
 	}
 	return balance(subTreePtr);

@@ -4,10 +4,10 @@ template <class key_type, class value_type>
 class DeletedNode : public HashNode<key_type, value_type>
 {
 private:
-	static DeletedNode * entry; // creating an entry to be used as the deleted node
-	DeletedNode() : HashNode() {} // using the constructor from the hash node class
-
+	static DeletedNode * entry;   // creating an entry to be used as the deleted node
+	
 public:
+	DeletedNode() : HashNode() {} // using the constructor from the hash node class
 	static DeletedNode * getUniqueDeletedNode();
 };
 
