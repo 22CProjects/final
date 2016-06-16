@@ -15,8 +15,9 @@ class HashTable
 {
 private:
 	HashNode<value_type, key_type> ** hash_table;		// creation of the hash table
-	int pseudo_array[HASH_TABLE_SIZE];					// created an array to hold a random set of numbers to
-														// use pseudo random probing
+	int pseudo_array[HASH_TABLE_SIZE]; // created an array to hold a random set of numbers to
+	// use pseudo random probing
+	int collisions = 0;
 
 public:
 	HashTable();										// default constructor
@@ -26,6 +27,8 @@ public:
 	void remove(key_type key);							// creation of the function to remove an element from the hash table
 	void print_table();									// function to print the table in hash order
 	void save_to_file(ofstream & output_file);			// function to print the hash table to a file
+	void count_collisions(key_type key);
+	void print_collisions() { cout << "Number of collisions: " << collisions << endl; };
 };
 
 // The default constructor
@@ -186,5 +189,15 @@ void HashTable<value_type, key_type>::save_to_file(ofstream & output_file)
 		}
 	}
 	output_file << endl;
+}
+
+template<class value_type, class key_type>
+void HashTable<value_type, key_type>::count_collisions(key_type key)
+{
+	int hash_key = (key % HASH_TABLE_SIZE);
+	if (hash_table[hash_key]->get_key() != key)
+	{
+		collisions++;
+	}
 }
 #endif
