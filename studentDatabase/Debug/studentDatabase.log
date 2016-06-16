@@ -1,13 +1,44 @@
-﻿Build started 6/15/2016 8:30:35 PM.
+﻿Build started 6/15/2016 8:35:48 PM.
      1>Project "C:\Users\ngannguyen9017\Documents\GitHub\final\studentDatabase\studentDatabase.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ngannguyen9017\Documents\GitHub\final\Debug\studentDatabase.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\ngannguyen9017\Documents\GitHub\final\Debug\studentDatabase.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ngannguyen9017\Documents\GitHub\final\Debug\studentDatabase.lib" /MACHINE:X86 Debug\main.obj
-         studentDatabase.vcxproj -> C:\Users\ngannguyen9017\Documents\GitHub\final\Debug\studentDatabase.exe
-     1>Done Building Project "C:\Users\ngannguyen9017\Documents\GitHub\final\studentDatabase\studentDatabase.vcxproj" (Build target(s)).
+     1>c:\users\ngannguyen9017\documents\github\final\studentdatabase\hashtable.h(17): error C2143: syntax error : missing ';' before '<'
+                 c:\users\ngannguyen9017\documents\github\final\studentdatabase\hashtable.h(29) : see reference to class template instantiation 'HashTable<key_type,value_type>' being compiled
+     1>c:\users\ngannguyen9017\documents\github\final\studentdatabase\hashtable.h(17): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\users\ngannguyen9017\documents\github\final\studentdatabase\hashtable.h(17): error C2238: unexpected token(s) preceding ';'
+     1>c:\users\ngannguyen9017\documents\github\final\studentdatabase\hashtable.h(17): error C2977: 'Node' : too many template arguments
+                 c:\users\ngannguyen9017\documents\github\final\studentdatabase\node.h(7) : see declaration of 'Node'
+                 c:\users\ngannguyen9017\documents\github\final\studentdatabase\main.cpp(41) : see reference to class template instantiation 'HashTable<StudentData,int>' being compiled
+     1>c:\users\ngannguyen9017\documents\github\final\studentdatabase\main.cpp(121): error C2664: 'void HashTable<StudentData,int>::insert(key_type,value_type)' : cannot convert argument 1 from 'int' to 'StudentData'
+                 with
+                 [
+                     key_type=StudentData
+         ,            value_type=int
+                 ]
+                 No constructor could take the source type, or constructor overload resolution was ambiguous
+     1>c:\users\ngannguyen9017\documents\github\final\studentdatabase\main.cpp(251): error C2664: 'void HashTable<StudentData,int>::insert(key_type,value_type)' : cannot convert argument 1 from 'int' to 'StudentData'
+                 with
+                 [
+                     key_type=StudentData
+         ,            value_type=int
+                 ]
+                 No constructor could take the source type, or constructor overload resolution was ambiguous
+     1>c:\users\ngannguyen9017\documents\github\final\studentdatabase\main.cpp(289): error C2664: 'void HashTable<StudentData,int>::remove(key_type)' : cannot convert argument 1 from 'int' to 'StudentData'
+                 with
+                 [
+                     key_type=StudentData
+                 ]
+                 No constructor could take the source type, or constructor overload resolution was ambiguous
+     1>c:\users\ngannguyen9017\documents\github\final\studentdatabase\main.cpp(351): error C2664: 'void HashTable<StudentData,int>::insert(key_type,value_type)' : cannot convert argument 1 from 'int' to 'StudentData'
+                 with
+                 [
+                     key_type=StudentData
+         ,            value_type=int
+                 ]
+                 No constructor could take the source type, or constructor overload resolution was ambiguous
+     1>Done Building Project "C:\Users\ngannguyen9017\Documents\GitHub\final\studentDatabase\studentDatabase.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:01.21
+Time Elapsed 00:00:00.56
