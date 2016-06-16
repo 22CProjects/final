@@ -118,7 +118,7 @@ void readFile(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& stu
 			stu.addEnd(*s);
 
 			stu_tree.avlAdd(id_convert, stu.get_node_address(*s));
-			stu_hash.insert(id_convert, *stu.get_node_address(*s));
+			stu_hash.insert(id_convert, stu.get_node_address(*s));
 		
 			delete s;
 			
@@ -248,7 +248,7 @@ void addStudent(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& s
 		if (conf == 'y'){
 			stu.addTop(*moreStu);
 			stu_tree.avlAdd(stu.get_node_data(*moreStu).getID(), stu.get_node_address(*moreStu));
-			stu_hash.insert(stu.get_node_data(*moreStu).getID(), *stu.get_node_address(*moreStu));
+			stu_hash.insert(stu.get_node_data(*moreStu).getID(), stu.get_node_address(*moreStu));
 			delete moreStu;
 			valid = true;
 		}
@@ -350,7 +350,7 @@ void undoDelete(SinglyLinkedList<StudentData>& stu, AVLTree<StudentData, int>& s
 
 		stu.addTop(moreStu);
 		stu_tree.avlAdd(stu.get_node_data(moreStu).getID(), stu.get_node_address(moreStu));
-		stu_hash.insert(stu.get_node_data(moreStu).getID(), *stu.get_node_address(moreStu));
+		stu_hash.insert(stu.get_node_data(moreStu).getID(), stu.get_node_address(moreStu));
 		cout << "Added    " << "\"" << moreStu << "\"" << " back into the system\n" << endl;
 	}
 	else

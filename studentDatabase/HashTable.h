@@ -21,8 +21,8 @@ private:
 public:
 	HashTable();										// default constructor
 	~HashTable();										// deconstructor
-	void insert(key_type key, value_type value);		// creation of the insertion function to input data in to the hash table
-	value_type find(key_type key);						// creation of the function to find the object by the key
+	void insert(key_type key, value_type* value);		// creation of the insertion function to input data in to the hash table
+	value_type* find(key_type key);						// creation of the function to find the object by the key
 	void remove(key_type key);							// creation of the function to remove an element from the hash table
 	void print_table();									// function to print the table in hash order
 	void save_to_file(ofstream & output_file);			// function to print the hash table to a file
@@ -62,15 +62,15 @@ HashTable<value_type, key_type>::~HashTable()
 
 // Insertion function
 template <class value_type, class key_type>
-void HashTable<value_type, key_type>::insert(key_type key, value_type value)
+void HashTable<value_type, key_type>::insert(key_type key, value_type* value)
 {
 	int hash_key = (key % HASH_TABLE_SIZE); // the hash function
 	int first_hash = -1;
 	int deleted_node = -1;
 	int counter = 0;
-
-	while (hash_key != first_hash && (hash_table[hash_key] == DeletedNode<value_type, key_type>::getUniqueDeletedNode() || hash_table[hash_key] != NULL && hash_table[hash_key]->get_key() != key))
-		// checking if the element is equal to null or a deleted node
+	
+	// checking if the element is equal to null or a deleted node
+	while (hash_key != first_hash && (hash_table[hash_key] == DeletedNode<value_type, key_type>::getUniqueDeletedNode() || hash_table[hash_key] != NULL && hash_table[hash_key]->get_key() != key))	
 	{
 		if (first_hash == -1)
 		{
@@ -106,7 +106,7 @@ void HashTable<value_type, key_type>::insert(key_type key, value_type value)
 
 // The find function
 template <class value_type, class key_type>
-value_type HashTable<value_type, key_type>::find(key_type key)
+value_type* HashTable<value_type, key_type>::find(key_type key)
 {
 	int hash_key = (key % HASH_TABLE_SIZE);
 	int first_hash = -1;
@@ -119,7 +119,7 @@ value_type HashTable<value_type, key_type>::find(key_type key)
 		}
 
 		counter++;
-		hash_key = (hash_key + pseudo_array[counter]) % HASH_TABLE_SIZE; // pseudo random probing
+		hash_key = (hash_key + pseudo_array[counter]) % HASH_TABLE_SIZE;	// pseudo random probing
 	}
 	if (hash_table[hash_key] == NULL || hash_key == first_hash)
 	{
@@ -127,8 +127,8 @@ value_type HashTable<value_type, key_type>::find(key_type key)
 	}
 	else
 	{
-		cout << hash_table[hash_key]->get_value() << endl;
-		return hash_table[hash_key]->get_value();  // returning the hash table key
+		cout << *hash_table[hash_key]->get_value() << endl;
+		return hash_table[hash_key]->get_value();							// returning the hash table key
 	}
 }
 
@@ -166,7 +166,7 @@ void HashTable<value_type, key_type>::print_table()
 		if (hash_table[i] == DeletedNode<value_type, key_type>::getUniqueDeletedNode() || hash_table[i] != NULL)
 		{
 			if (hash_table[i]->get_key() != DeletedNode<value_type, key_type>::getUniqueDeletedNode()->get_key())
-				cout << "Key: " << hash_table[i]->get_key() << " " << " Student Info - " << hash_table[i]->get_value() << endl;
+				cout << "Key: " << hash_table[i]->get_key() << " " << " Student Info - " << *hash_table[i]->get_value() << endl;
 		}
 	}
 	cout << endl;
@@ -182,7 +182,7 @@ void HashTable<value_type, key_type>::save_to_file(ofstream & output_file)
 		if (hash_table[i] == DeletedNode<value_type, key_type>::getUniqueDeletedNode() || hash_table[i] != NULL)
 		{
 			if (hash_table[i]->get_key() != DeletedNode<value_type, key_type>::getUniqueDeletedNode()->get_key())
-				output_file << "Key: " << hash_table[i]->get_key() << " " << " Student Info - " << hash_table[i]->get_value() << endl;
+				output_file << "Key: " << hash_table[i]->get_key() << " " << " Student Info - " << *hash_table[i]->get_value() << endl;
 		}
 	}
 	output_file << endl;
